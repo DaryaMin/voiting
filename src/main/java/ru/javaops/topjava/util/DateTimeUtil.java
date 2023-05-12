@@ -20,4 +20,8 @@ public class DateTimeUtil {
     public static LocalDateTime atStartOfNextDayOrMax(LocalDate localDate) {
         return localDate != null ? localDate.plus(1, ChronoUnit.DAYS).atStartOfDay() : MAX_DATE;
     }
+
+    public static LocalDate getNowDate() {
+        return LocalDateTime.now().toLocalDate();
+    }
 }
