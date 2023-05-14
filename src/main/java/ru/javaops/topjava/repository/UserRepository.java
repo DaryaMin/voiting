@@ -14,7 +14,7 @@ import static ru.javaops.topjava.config.SecurityConfig.PASSWORD_ENCODER;
 public interface UserRepository extends BaseRepository<User> {
 
     @Query("SELECT u FROM User u WHERE u.email = LOWER(:email)")
-    Optional<User> findByEmailIgnoreCase(String email);
+    Optional<User> getByEmail(String email);
 
     @Transactional
     default User prepareAndSave(User user) {
@@ -24,6 +24,6 @@ public interface UserRepository extends BaseRepository<User> {
     }
 
     default User getExistedByEmail(String email) {
-        return findByEmailIgnoreCase(email).orElseThrow(() -> new NotFoundException("User with email=" + email + " not found"));
+        return getByEmail(email).orElseThrow(() -> new NotFoundException("User with email=" + email + " not found"));
     }
 }

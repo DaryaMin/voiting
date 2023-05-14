@@ -15,8 +15,14 @@ import java.util.Objects;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "votes", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date"}, name = "name_unique_votes_idx")})
+@Table(name = "vote", uniqueConstraints = {
+        @UniqueConstraint(name = "one_vote_per_day", columnNames = {"user_id", "vote_date"})},
+        indexes = {@Index(name = "fn_restaurant_id", columnList = "restaurant_id")})
 public class Vote extends BaseEntity {
+
+    @Column(name = "vote_date", columnDefinition = "date default now()", nullable = false)
+    @NotNull
+    private LocalDate date;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
@@ -30,38 +36,20 @@ public class Vote extends BaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Restaurant restaurant;
 
-    private LocalDate date;
-
-    public Vote(Integer id, User user, Restaurant restaurant) {
+    public Vote(Integer id, LocalDate date, Restaurant restaurant, User user) {
         super(id);
-        this.user = user;
-        this.restaurant = restaurant;
-    }
-
-    public Vote(Integer id, User user, Restaurant restaurant, LocalDate date) {
-        this(id, user, restaurant);
         this.date = date;
+        this.restaurant = restaurant;
+        this.user = user;
     }
 
     @Override
     public String toString() {
-        return "Votes{" +
-                "date=" + date +
-                ", id=" + id +
+        return "Vote{" +
+                "id=" + id +
+                ", date=" + date +
+                ", restaurant=" + (restaurant != null ? restaurant.getId() : null) +
+                ", user=" + (user != null ? user.getId() : null) +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Vote vote = (Vote) o;
-        return Objects.equals(user, vote.user) && Objects.equals(restaurant, vote.restaurant) && Objects.equals(date, vote.date);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), user, restaurant, date);
     }
 }

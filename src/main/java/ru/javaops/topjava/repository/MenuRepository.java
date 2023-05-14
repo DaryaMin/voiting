@@ -1,26 +1,37 @@
 package ru.javaops.topjava.repository;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
-import ru.javaops.topjava.error.NotFoundException;
 import ru.javaops.topjava.model.Menu;
-import ru.javaops.topjava.model.User;
 
-import java.time.LocalDateTime;
+
+import java.time.LocalDate;
+
 import java.util.List;
 import java.util.Optional;
 
-import static ru.javaops.topjava.config.SecurityConfig.PASSWORD_ENCODER;
+import static ru.javaops.topjava.util.validation.ValidationUtil.checkModification;
+
 
 @Transactional(readOnly = true)
 public interface MenuRepository extends BaseRepository<Menu> {
 
-    @Query("SELECT m FROM Menu m WHERE m.restaurant.id=:restaurant_id ORDER BY m.created DESC, m.price ASC")
-    Optional<Menu> getMenu(@Param("restaurant_id") int restaurantId);
+    @Query("select d from Dish d where d.restaurant.id = ?1 and d.date = ?2 order by d.name")
+    List<Menu> findAllByRestaurantIdAndDate(int restaurantId, LocalDate date);
+
+    @Query("select d from Dish d where d.id = ?1 and d.restaurant.id = ?2")
+    Optional<Menu> findByIdAndRestaurantId(int id, int restaurantId);
 
     @Transactional
-    default Menu prepareAndSave(Menu menu) {
-        return save(menu);
+    @Modifying
+    @Query("delete from Dish d where d.id =?1 and d.restaurant.id = ?2")
+    int deleteByIdAndRestaurantId(int id, int restaurantId);
+
+    @Query("select d from Dish d where d.date =?1 order by d.name")
+    List<Menu> findAllByDateAndOrderByName(LocalDate date);
+
+    default void deleteExisted(int id, int restaurantId) {
+        checkModification(deleteByIdAndRestaurantId(id, restaurantId), id, restaurantId);
     }
 }

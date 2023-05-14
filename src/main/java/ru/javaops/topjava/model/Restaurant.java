@@ -7,36 +7,44 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "restaurants")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Restaurant extends BaseEntity {
+public class Restaurant extends NamedEntity {
 
-    @Size(min = 1, max = 128)
-    @Column(nullable = false, unique = true)
-    @NotNull
-    private String name;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
+    @OneToMany(fetch = FetchType.LAZY, targetEntity = Menu.class)
+    @JoinColumn(name = "restaurant_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
-    private List<Menu> menu;
+    private Set<Menu> menu;
 
-    public Restaurant(String name) {
-        this.name = name;
-    }
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
+    @ToString.Exclude
+    private Set<Vote> vote;
 
     public Restaurant(Integer id, String name) {
-        this.id = id;
-        this.name = name;
+        this(id, name, null);
+    }
+
+    public Restaurant(Integer id, String name, Collection<Menu> menu) {
+        super(id, name);
+        setMenu(menu);
+    }
+
+    public void setMenu(Collection<Menu> menu) {
+        this.menu = CollectionUtils.isEmpty(menu) ? Set.of() : Set.copyOf(menu);
     }
 
     @Override

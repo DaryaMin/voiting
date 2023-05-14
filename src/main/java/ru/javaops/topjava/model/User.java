@@ -22,8 +22,6 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 
-import static ru.javaops.topjava.util.UsersUtil.DEFAULT_CALORIES_PER_DAY;
-
 @Entity
 @Table(name = "users")
 @Getter

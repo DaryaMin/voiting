@@ -9,12 +9,16 @@ import java.util.List;
 
 @UtilityClass
 public class RestaurantUtil {
-
-    public static RestaurantTo createTo(Restaurant restaurant) {
-        return new RestaurantTo(restaurant.getId(), restaurant.getName());
+    public static Restaurant createNewFromTo(RestaurantTo restaurantTo) {
+        return new Restaurant(null, restaurantTo.getName());
     }
 
-    public static List<RestaurantTo> getTos(Collection<Restaurant> restaurants) {
-        return restaurants.stream().map(RestaurantUtil::createTo).toList();
+    public static Restaurant updateFromTo(Restaurant restaurant, RestaurantTo restaurantTo) {
+        restaurant.setName(restaurantTo.getName());
+        return restaurant;
+    }
+
+    public static RestaurantTo convertFromRestaurant(Restaurant restaurant) {
+        return new RestaurantTo(restaurant.getId(), restaurant.getName());
     }
 }

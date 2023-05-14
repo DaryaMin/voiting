@@ -1,69 +1,49 @@
 package ru.javaops.topjava.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import lombok.ToString;
 
 import java.time.LocalDate;
-import java.util.Objects;
-
 
 @Entity
-@NoArgsConstructor
+@Table(name = "menu", indexes = @Index(name = "menu_date", columnList = "menu_date DESC, restaurant_id"),
+        uniqueConstraints = @UniqueConstraint(name = "uniq_name_date", columnNames = {"menu_date", "name", "restaurant_id"}))
 @Getter
 @Setter
-@Table(name = "Menues", uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "restaurant_id"}, name = "Menu_unique_for_restaurant_idx")})
-public class Menu extends BaseEntity {
+@NoArgsConstructor
+@ToString(callSuper = true)
+public class Menu extends NamedEntity {
 
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "restaurant_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "restaurant_id", referencedColumnName = "id", nullable = false)
+    @JsonBackReference
+    @ToString.Exclude
     private Restaurant restaurant;
 
-    @Size(max = 128)
+    @Column(name = "menu_date", nullable = false)
     @NotNull
-    private String name;
+    private LocalDate date;
 
+    @Column(name = "price", nullable = false)
     @NotNull
-    private int price;// price int penny, cents and ect.
+    @PositiveOrZero
+    private int price;
 
-    @Column(name = "created", nullable = false, columnDefinition = "timestamp default now()", updatable = false)
-    @NotNull
-    private LocalDate created;
-
-    public Menu(Integer id, Restaurant restaurant, String name, int price, LocalDate created) {
-        super(id);
-        this.restaurant = restaurant;
-        this.name = name;
+    public Menu(Integer id, String name, LocalDate date, int price, Restaurant restaurant) {
+        super(id, name);
+        this.date = date;
         this.price = price;
-        this.created = created;
+        this.restaurant = restaurant;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Menu Menu = (Menu) o;
-        return Menu.price == price && Objects.equals(restaurant, Menu.restaurant) && Objects.equals(name, Menu.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), restaurant, name, price);
-    }
-
-    @Override
-    public String toString() {
-        return "Menu{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                '}';
+    public Menu(Integer id, String name, LocalDate date, int price) {
+        this(id, name, date, price, null);
     }
 }

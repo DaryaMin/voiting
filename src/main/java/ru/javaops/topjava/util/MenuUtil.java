@@ -9,15 +9,18 @@ import java.util.Optional;
 
 @UtilityClass
 public class MenuUtil {
-    public static MenuTo createTo(Menu Menu) {
-        return new MenuTo(Menu.getId(), Menu.getName(), Menu.getPrice());
+    public static Menu createNewFromTo(MenuTo menuTo) {
+        return new Menu(null, menuTo.getName(), menuTo.getDate(), menuTo.getPrice());
     }
 
-    public  List<MenuTo> getTos(Optional<Menu> Menues) {
-        return Menues.stream().map(MenuUtil::createTo).toList();
+    public static Menu updateFromTo(Menu menu, MenuTo menuTo) {
+        menu.setName(menuTo.getName());
+        menu.setPrice(menuTo.getPrice());
+        menu.setDate(menuTo.getDate());
+        return menu;
     }
 
-    public static Menu createNewFromTo(MenuTo MenuTo) {
-        return new Menu(null, null, MenuTo.getName(), MenuTo.getPrice(), DateTimeUtil.getNowDate());
+    public static MenuTo convertFromMenu(Menu menu) {
+        return new MenuTo(menu.getId(), menu.getName(), menu.getDate(), menu.getPrice());
     }
 }
