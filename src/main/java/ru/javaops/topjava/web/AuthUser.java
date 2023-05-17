@@ -43,10 +43,6 @@ public class AuthUser extends org.springframework.security.core.userdetails.User
         return get().id();
     }
 
-    public boolean hasRole(Role role) {
-        return user.hasRole(role);
-    }
-
     @Override
     public String toString() {
         return "AuthUser:" + user.getId() + '[' + user.getEmail() + ']';
