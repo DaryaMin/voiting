@@ -45,7 +45,7 @@ public class AdminUserController extends AbstractUserController {
     public ResponseEntity<User> createWithLocation(@Valid @RequestBody User user) {
         log.info("create {}", user);
         checkNew(user);
-        User created = repository.prepareAndSave(user);
+        User created = prepareAndSave(user);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();

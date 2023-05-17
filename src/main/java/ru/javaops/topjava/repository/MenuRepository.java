@@ -17,18 +17,18 @@ import static ru.javaops.topjava.util.validation.ValidationUtil.checkModificatio
 @Transactional(readOnly = true)
 public interface MenuRepository extends BaseRepository<Menu> {
 
-    @Query("select d from Dish d where d.restaurant.id = ?1 and d.date = ?2 order by d.name")
+    @Query("select m from Menu m where m.restaurant.id = ?1 and m.date = ?2 order by m.name")
     List<Menu> findAllByRestaurantIdAndDate(int restaurantId, LocalDate date);
 
-    @Query("select d from Dish d where d.id = ?1 and d.restaurant.id = ?2")
+    @Query("select m from Menu m where m.id = ?1 and m.restaurant.id = ?2")
     Optional<Menu> findByIdAndRestaurantId(int id, int restaurantId);
 
     @Transactional
     @Modifying
-    @Query("delete from Dish d where d.id =?1 and d.restaurant.id = ?2")
+    @Query("delete from Menu m where m.id =?1 and m.restaurant.id = ?2")
     int deleteByIdAndRestaurantId(int id, int restaurantId);
 
-    @Query("select d from Dish d where d.date =?1 order by d.name")
+    @Query("select  m from Menu m where m.date =?1 order by m.name")
     List<Menu> findAllByDateAndOrderByName(LocalDate date);
 
     default void deleteExisted(int id, int restaurantId) {
