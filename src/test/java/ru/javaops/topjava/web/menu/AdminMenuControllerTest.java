@@ -27,8 +27,8 @@ import static ru.javaops.topjava.web.user.UserTestData.ADMIN_MAIL;
 
 class AdminMenuControllerTest extends AbstractControllerTest {
 
-    private final String REST_URL = "/api/admin/restaurants/";
-    private final String MENU = "/menu/";
+    private final String REST_URL = "/api/admin/restaurants";
+    private final String MENU = "/menu";
     private static final String EXCEPTION_DUPLICATE_MENU_DATE_NAME = "Menu in this date with this name already exists";
 
 
@@ -38,17 +38,17 @@ class AdminMenuControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void getAllByRestaurantId() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + RESTAURANT1_ID + MENU))
+        perform(MockMvcRequestBuilders.get(REST_URL +"/"+ RESTAURANT1_ID +"/"+ MENU))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MENU_MATCHER.contentJson(menu3, menu4, menu1, menu2));
+                .andExpect(MENU_MATCHER.contentJson(menu4, menu2, menu3, menu1));
     }
 
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void get() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + RESTAURANT1_ID + MENU + MENU1_ID))
+        perform(MockMvcRequestBuilders.get(REST_URL +"/"+ RESTAURANT1_ID + MENU +"/"+ MENU1_ID))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -58,7 +58,7 @@ class AdminMenuControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void getAllByDate() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + MENU))
+        perform(MockMvcRequestBuilders.get(REST_URL +"/"+MENU))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -68,7 +68,7 @@ class AdminMenuControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void getWithWrongRestaurantId() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + RESTAURANT1_ID + MENU + MENU5_ID))
+        perform(MockMvcRequestBuilders.get(REST_URL +"/"+ RESTAURANT1_ID +"/"+ MENU+"/" + MENU5_ID))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof IllegalRequestDataException))
                 .andExpect(result -> assertEquals(MenuController.MENU_NOT_FOUND,
@@ -79,7 +79,7 @@ class AdminMenuControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = ADMIN_MAIL)
     void create() throws Exception {
         MenuTo newMenuTo = AdminMenuTestData.getNew();
-        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + RESTAURANT1_ID + MENU)
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + "/" +RESTAURANT1_ID + MENU)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newMenuTo)))
                 .andExpect(status().isCreated());
@@ -98,7 +98,7 @@ class AdminMenuControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = ADMIN_MAIL)
     void createWithWrongDataForMenuTo() throws Exception {
         MenuTo newMenuTo = AdminMenuTestData.getNewWithWrongData();
-        perform(MockMvcRequestBuilders.post(REST_URL + RESTAURANT1_ID + MENU)
+        perform(MockMvcRequestBuilders.post(REST_URL +"/"+ RESTAURANT1_ID + MENU)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newMenuTo)))
                 .andExpect(status().isUnprocessableEntity());
@@ -108,7 +108,7 @@ class AdminMenuControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = ADMIN_MAIL)
     void createWithWrongRestaurantId() throws Exception {
         MenuTo newMenuTo = AdminMenuTestData.getNew();
-        perform(MockMvcRequestBuilders.post(REST_URL + WRONG_RESTAURANT_ID + MENU)
+        perform(MockMvcRequestBuilders.post(REST_URL+"/" + WRONG_RESTAURANT_ID +"/"+ MENU)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newMenuTo)))
                 .andExpect(status().isUnprocessableEntity());
@@ -117,7 +117,7 @@ class AdminMenuControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void createWithNotUniqueDateAndName() throws Exception {
-        perform(MockMvcRequestBuilders.post(REST_URL + RESTAURANT1_ID + MENU)
+        perform(MockMvcRequestBuilders.post(REST_URL +"/"+ RESTAURANT1_ID +"/"+ MENU)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(getWithNotUniqueDateAndName())))
                 .andExpect(status().isUnprocessableEntity())
@@ -128,7 +128,7 @@ class AdminMenuControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = ADMIN_MAIL)
     void update() throws Exception {
         MenuTo updatedMenuTo = AdminMenuTestData.getNew();
-        perform(MockMvcRequestBuilders.put(REST_URL + RESTAURANT1_ID + MENU + MENU1_ID)
+        perform(MockMvcRequestBuilders.put(REST_URL +"/"+ RESTAURANT1_ID + MENU +"/"+ MENU1_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updatedMenuTo)))
                 .andDo(print())
@@ -144,7 +144,7 @@ class AdminMenuControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = ADMIN_MAIL)
     void updateWithWrongDataForMenuTo() throws Exception {
         MenuTo updatedMenuTo = AdminMenuTestData.getNewWithWrongData();
-        perform(MockMvcRequestBuilders.put(REST_URL + RESTAURANT1_ID + MENU + MENU1_ID)
+        perform(MockMvcRequestBuilders.put(REST_URL+"/" + RESTAURANT1_ID + MENU +"/"+ MENU1_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updatedMenuTo)))
                 .andDo(print())
@@ -155,7 +155,7 @@ class AdminMenuControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void delete() throws Exception {
-        perform(MockMvcRequestBuilders.delete(REST_URL + RESTAURANT1_ID + MENU + MENU1_ID))
+        perform(MockMvcRequestBuilders.delete(REST_URL +"/"+ RESTAURANT1_ID + MENU +"/"+ MENU1_ID))
                 .andDo(print())
                 .andExpect(status().isNoContent());
         assertFalse(menuRepository.findById(MENU1_ID).isPresent());
@@ -164,7 +164,7 @@ class AdminMenuControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void deleteWithWrongId() throws Exception {
-        perform(MockMvcRequestBuilders.delete(REST_URL + RESTAURANT1_ID + MENU + MENU5_ID))
+        perform(MockMvcRequestBuilders.delete(REST_URL +"/"+ RESTAURANT1_ID + MENU +"/"+ MENU5_ID))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity());
         assertTrue(menuRepository.findById(MENU5_ID).isPresent());
