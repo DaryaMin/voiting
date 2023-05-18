@@ -48,7 +48,7 @@ public class AdminRestaurantController extends RestaurantRestController {
     }
 
     @GetMapping
-    public List<RestaurantTo> getAll() {
+    public List<Restaurant> getAll() {
         return super.getAll();
     }
 

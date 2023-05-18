@@ -47,26 +47,4 @@ public class Restaurant extends NamedEntity {
     public void setMenu(Collection<Menu> menu) {
         this.menu = CollectionUtils.isEmpty(menu) ? Set.of() : Set.copyOf(menu);
     }
-
-    @Override
-    public String toString() {
-        return "Restaurant{" +
-                "id=" + id +
-                ", name=" + name +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Restaurant that = (Restaurant) o;
-        return name.equals(that.name) && id.equals(that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), name, id);
-    }
 }

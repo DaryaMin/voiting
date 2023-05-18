@@ -23,8 +23,7 @@ public class RestaurantRestController {
         return RestaurantUtil.convertFromRestaurant(restaurant);
     }
 
-    public List<RestaurantTo> getAll() {
-        List<Restaurant> restaurants = restaurantRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
-        return restaurants.stream().map(RestaurantUtil::convertFromRestaurant).toList();
+    public List<Restaurant> getAll() {
+        return restaurantRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
     }
 }

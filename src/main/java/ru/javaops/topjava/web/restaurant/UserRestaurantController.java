@@ -45,7 +45,7 @@ public class UserRestaurantController extends RestaurantRestController {
 
     @GetMapping
     @Cacheable
-    public List<RestaurantTo> getAll() {
+    public List<Restaurant> getAll() {
         return super.getAll();
     }
 }

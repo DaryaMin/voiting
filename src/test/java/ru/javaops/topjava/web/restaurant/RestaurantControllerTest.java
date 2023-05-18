@@ -16,6 +16,10 @@ import ru.javaops.topjava.web.AbstractControllerTest;
 
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -94,16 +98,17 @@ class RestaurantControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.get(AdminRestaurantController.REST_URL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(RESTAURANT_TO_MATCHER.contentJson(restaurantTo1, restaurantTo2, restaurantTo3));
+                .andExpect(RESTAURANT_MATCHER.contentJson(restaurant1, restaurant2, restaurant3));
     }
 
     @Test
     @WithUserDetails(value = USER_MAIL)
     void getAllForUser() throws Exception {
-        perform(MockMvcRequestBuilders.get(AdminRestaurantController.REST_URL))
+        perform(MockMvcRequestBuilders.get(UserRestaurantController.REST_URL_FOR_USER))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(RESTAURANT_TO_MATCHER.contentJson(restaurantTo1, restaurantTo2, restaurantTo3));
+                .andExpect(RESTAURANT_MATCHER.contentJson(Stream.of(restaurant1, restaurant2, restaurant3)
+                        .sorted(Comparator.comparing(Restaurant::getName)).toList()));
     }
 
     @Test
