@@ -29,7 +29,7 @@ public class RestaurantTestData {
     }
 
     public static Restaurant getNotUniqueName() {
-        return new Restaurant(null, "Пушкин");
+        return new Restaurant(null, "Пушкин", null);
     }
 
     public static Restaurant getUpdated() {

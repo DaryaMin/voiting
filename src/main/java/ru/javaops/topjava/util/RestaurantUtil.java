@@ -10,7 +10,7 @@ import java.util.List;
 @UtilityClass
 public class RestaurantUtil {
     public static Restaurant createNewFromTo(RestaurantTo restaurantTo) {
-        return new Restaurant(null, restaurantTo.getName());
+        return new Restaurant(null, restaurantTo.getName(), null);
     }
 
     public static Restaurant updateFromTo(Restaurant restaurant, RestaurantTo restaurantTo) {
