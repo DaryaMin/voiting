@@ -3,6 +3,7 @@ package ru.javaops.topjava.web.restaurant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import ru.javaops.topjava.error.IllegalRequestDataException;
+import ru.javaops.topjava.error.NotFoundException;
 import ru.javaops.topjava.model.Restaurant;
 import ru.javaops.topjava.repository.RestaurantRepository;
 import ru.javaops.topjava.to.RestaurantTo;
@@ -18,12 +19,12 @@ public class RestaurantRestController {
 
     public RestaurantTo get(int id) {
         Restaurant restaurant = restaurantRepository.findById(id)
-                .orElseThrow(() -> new IllegalRequestDataException(RESTAURANT_NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException("Entity with id=" + id + " not found"));
         return RestaurantUtil.convertFromRestaurant(restaurant);
     }
 
     public List<RestaurantTo> getAll() {
-        List<Restaurant> restaurants = restaurantRepository.findAll(Sort.by(Sort.Direction.ASC, "name", "address"));
+        List<Restaurant> restaurants = restaurantRepository.findAll(Sort.by(Sort.Direction.ASC, "name"));
         return restaurants.stream().map(RestaurantUtil::convertFromRestaurant).toList();
     }
 }

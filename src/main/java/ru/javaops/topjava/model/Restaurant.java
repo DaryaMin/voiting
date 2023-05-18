@@ -18,7 +18,8 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "restaurants")
+@Table(name = "restaurants", uniqueConstraints = {
+        @UniqueConstraint(name = "uniq_name", columnNames = "name")})
 @Getter
 @Setter
 @NoArgsConstructor
