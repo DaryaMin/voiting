@@ -98,7 +98,8 @@ class RestaurantControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.get(AdminRestaurantController.REST_URL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(RESTAURANT_MATCHER.contentJson(restaurant1, restaurant2, restaurant3));
+                .andExpect(RESTAURANT_MATCHER.contentJson(Stream.of(restaurant1, restaurant2, restaurant3)
+                        .sorted(Comparator.comparing(Restaurant::getName)).toList()));
     }
 
     @Test
